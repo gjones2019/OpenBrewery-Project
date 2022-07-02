@@ -42,7 +42,7 @@ function App() {
       </Router>
     );
   } else {
-    return null;
+    return <div>No Breweries found. Open Brewery may be having issues</div>;
   }
 }
 

@@ -5,19 +5,25 @@ export default function BreweryDetail(breweries) {
 
   const brewery = breweries.breweries[id];
 
+  const name = brewery.name || "Name not available";
+  const address =
+    `${brewery.city}, ${brewery.state} ${brewery.postal_code}` ||
+    "Address not available";
+  const phone = brewery.phone || "Phone number not available";
+  const country = brewery.country || "Country not available";
+  const website = brewery.website_url ? (
+    <a href={brewery.website_url}>View Website</a>
+  ) : (
+    "Website not available"
+  );
+
   return (
     <main>
-      <h1>{brewery?.name || "Name not available"}</h1>
-      <p>{`${brewery?.city}, ${brewery?.state} ${brewery?.postal_code}`}</p>
-      <p>{brewery?.country || "Country not available"}</p>
-      <p>{brewery?.phone || "Phone number not available"}</p>
-      <p>
-        {brewery?.website_url ? (
-          <a href={brewery.website_url}>View Website</a>
-        ) : (
-          "Website not available"
-        )}
-      </p>
+      <h1>{name}</h1>
+      <p>{address}</p>
+      <p>{country}</p>
+      <p>{phone}</p>
+      <p>{website}</p>
       <Link to="/breweries">Back to Breweries</Link>
     </main>
   );
