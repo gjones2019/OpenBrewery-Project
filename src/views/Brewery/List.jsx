@@ -1,30 +1,33 @@
 import { Link } from "react-router-dom";
 import React, { useState } from "react";
 export default function BreweryList({ breweries }) {
-  const [inputValue, setInputValue] = useState("");
+  const [searched, setSearched] = useState([]);
   const [, updateState] = React.useState();
   const forceUpdate = React.useCallback(() => updateState({}), []);
-  const handleSearch = async () => {
+
+  const handleSearch = async (input) => {
     try {
       const dataFetch = await fetch(
-        `https://api.openbrewerydb.org/breweries/search?query=${inputValue}`
+        `https://api.openbrewerydb.org/breweries/search?query=${input}`
       );
       const data = await dataFetch.json();
-      sessionStorage.setItem("searchResults", JSON.stringify(data));
+      if (data) {
+        setSearched(data);
+      }
     } catch (error) {
       console.log(error);
     }
   };
   const handleChange = (e) => {
     e.preventDefault();
-    setInputValue(e.target.value);
+    handleSearch(e.target.value);
   };
   const handleSubmit = () => {
-    handleSearch(inputValue);
+    sessionStorage.setItem("searchResults", JSON.stringify(searched));
     sessionStorage.setItem("displaySearchResults", true);
   };
   const handleReset = () => {
-    sessionStorage.setItem("displaySearchResults", false);
+    sessionStorage.removeItem("displaySearchResults");
     sessionStorage.removeItem("searchResults");
     forceUpdate();
   };

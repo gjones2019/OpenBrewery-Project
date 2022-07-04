@@ -15,7 +15,7 @@ function App() {
     const getBreweries = async () => {
       try {
         const dataFetch = await fetch(
-          "https://api.openbrewerydb.org/breweries"
+          "https://api.openbrewerydb.org/breweries?per_page=50"
         );
         const data = await dataFetch.json();
         setBreweries(data);
