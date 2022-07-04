@@ -30,10 +30,13 @@ export default function BreweryList({ breweries, setBreweries }) {
     handleSearch(query);
     setDisplaySearchResults(true);
   };
-  const handleReset = () => {
+  const handleReset = (e) => {
+    e.preventDefault();
     setDisplaySearchResults(false);
     setSearchResults([]);
     setpaginate(10);
+    setQuery("");
+    document.getElementById("search").value = "";
   };
   const loadMore = (e) => {
     e.preventDefault();
@@ -91,6 +94,7 @@ export default function BreweryList({ breweries, setBreweries }) {
           onChange={(e) => setQuery(e.target.value)}
           type="text"
           name="search"
+          id="search"
           placeholder="Find a brewery"
         />
         <button type="submit" onClick={handleSubmit}>

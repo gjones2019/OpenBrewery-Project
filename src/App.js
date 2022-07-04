@@ -33,7 +33,7 @@ function App() {
   if (error) {
     return <>{error.message}</>;
   } else if (!loaded) {
-    return <>loading...</>;
+    return <div>Loading...</div>;
   } else {
     return (
       <Router>
