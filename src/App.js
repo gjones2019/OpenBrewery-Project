@@ -10,6 +10,8 @@ import BreweryList from "./views/Brewery/List";
 import BreweryDetail from "./views/Brewery/Detail";
 
 function App() {
+  const [error, setError] = useState(null);
+  const [loaded, setLoaded] = useState(false);
   const [breweries, setBreweries] = useState([]);
   useEffect(() => {
     const getBreweries = async () => {
@@ -19,30 +21,42 @@ function App() {
         );
         const data = await dataFetch.json();
         setBreweries(data);
+        setLoaded(true);
       } catch (error) {
+        setError(error);
+        setLoaded(true);
         console.log(error);
       }
     };
     getBreweries();
   }, []);
-  if (breweries) {
+  if (error) {
+    return <>{error.message}</>;
+  } else if (!loaded) {
+    return <>loading...</>;
+  } else {
     return (
       <Router>
         <Routes>
           <Route
             path="/breweries/:id"
-            element={<BreweryDetail breweries={breweries} />}
+            element={
+              <BreweryDetail
+                breweries={breweries}
+                setBreweries={setBreweries}
+              />
+            }
           />
           <Route
             path="/breweries"
-            element={<BreweryList breweries={breweries} />}
+            element={
+              <BreweryList breweries={breweries} setBreweries={setBreweries} />
+            }
           />
           <Route path="/" element={<Navigate to="/breweries" replace />} />
         </Routes>
       </Router>
     );
-  } else {
-    return <div>No Breweries found. Open Brewery may be having issues</div>;
   }
 }
 

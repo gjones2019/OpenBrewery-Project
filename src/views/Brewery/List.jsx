@@ -1,9 +1,13 @@
 import { Link } from "react-router-dom";
 import React, { useState } from "react";
-export default function BreweryList({ breweries }) {
-  const [searched, setSearched] = useState([]);
-  const [, updateState] = React.useState();
-  const forceUpdate = React.useCallback(() => updateState({}), []);
+
+export default function BreweryList({ breweries, setBreweries }) {
+  const [searchResults, setSearchResults] = useState([]);
+  const [displaySearchResults, setDisplaySearchResults] = useState(false);
+  const [paginate, setpaginate] = useState(10);
+  const [query, setQuery] = useState("");
+  const [sort, setSort] = useState(null);
+  const [sortedBreweries, setSortedBreweries] = useState([]);
 
   const handleSearch = async (input) => {
     try {
@@ -12,37 +16,79 @@ export default function BreweryList({ breweries }) {
       );
       const data = await dataFetch.json();
       if (data) {
-        setSearched(data);
+        setSearchResults(data);
       }
     } catch (error) {
       console.log(error);
     }
   };
-  const handleChange = (e) => {
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-    handleSearch(e.target.value);
-  };
-  const handleSubmit = () => {
-    sessionStorage.setItem("searchResults", JSON.stringify(searched));
-    sessionStorage.setItem("displaySearchResults", true);
+    setSearchResults([]);
+    setpaginate(10);
+    handleSearch(query);
+    setDisplaySearchResults(true);
   };
   const handleReset = () => {
-    sessionStorage.removeItem("displaySearchResults");
-    sessionStorage.removeItem("searchResults");
-    forceUpdate();
+    setDisplaySearchResults(false);
+    setSearchResults([]);
+    setpaginate(10);
+  };
+  const loadMore = (e) => {
+    e.preventDefault();
+    setpaginate((prevValue) => (prevValue += 10));
+  };
+  const loadLess = (e) => {
+    e.preventDefault();
+    if (paginate > 10) {
+      setpaginate((prevValue) => (prevValue -= 10));
+    }
+  };
+  const sortAsc = (e) => {
+    e.preventDefault();
+    const sortedArray = () => {
+      searchResults.sort((a, b) => {
+        if (a.name < b.name) return -1;
+        if (a.name > b.name) return 1;
+        return 0;
+      });
+      breweries.sort((a, b) => {
+        if (a.name < b.name) return -1;
+        if (a.name > b.name) return 1;
+        return 0;
+      });
+    };
+    sortedArray();
+    setSortedBreweries(sortedArray);
+    setSort("ASC");
   };
 
-  const brewerySearchResults = JSON.parse(
-    sessionStorage.getItem("searchResults")
-  );
+  const sortDesc = (e) => {
+    e.preventDefault();
+    const sortedArray = () => {
+      searchResults.sort((a, b) => {
+        if (b.name < a.name) return -1;
+        if (b.name > a.name) return 1;
+        return 0;
+      });
+      breweries.sort((a, b) => {
+        if (b.name < a.name) return -1;
+        if (b.name > a.name) return 1;
+        return 0;
+      });
+    };
+    sortedArray();
+    setSortedBreweries(sortedArray);
+    setSort("DESC");
+  };
 
-  const displaySearchResults = sessionStorage.getItem("displaySearchResults");
   return (
     <main>
       <h1>Brewery Catalog</h1>
       <form>
         <input
-          onChange={handleChange}
+          onChange={(e) => setQuery(e.target.value)}
           type="text"
           name="search"
           placeholder="Find a brewery"
@@ -53,18 +99,20 @@ export default function BreweryList({ breweries }) {
         <button type="reset" onClick={handleReset}>
           Reset
         </button>
+        <button onClick={loadMore}>Load More</button>
+        <button onClick={loadLess}>Load Less</button>
+        <button onClick={sortAsc}>Sort Ascending Name</button>
+        <button onClick={sortDesc}>Sort Descending Name</button>
       </form>
       <ol>
-        {displaySearchResults && brewerySearchResults
-          ? brewerySearchResults
-              .slice(0, 10)
-              .map(({ name, city, state }, i) => (
-                <li key={i}>
-                  <Link to={`/breweries/${i}`}>{name}</Link> -{" "}
-                  {`${city}, ${state}`}
-                </li>
-              ))
-          : breweries.slice(0, 10).map(({ name, city, state }, i) => (
+        {displaySearchResults && searchResults
+          ? searchResults.slice(0, paginate).map(({ name, city, state }, i) => (
+              <li key={i}>
+                <Link to={`/breweries/${i}`}>{name}</Link> -{" "}
+                {`${city}, ${state}`}
+              </li>
+            ))
+          : breweries.slice(0, paginate).map(({ name, city, state }, i) => (
               <li key={i}>
                 <Link to={`/breweries/${i}`}>{name}</Link> -{" "}
                 {`${city}, ${state}`}
