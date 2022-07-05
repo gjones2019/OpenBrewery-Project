@@ -33,25 +33,18 @@ function App() {
   if (error) {
     return <>{error.message}</>;
   } else if (!loaded) {
-    return <div>Loading...</div>;
+    return <h2 className="header">Loading...</h2>;
   } else {
     return (
       <Router>
         <Routes>
           <Route
             path="/breweries/:id"
-            element={
-              <BreweryDetail
-                breweries={breweries}
-                setBreweries={setBreweries}
-              />
-            }
+            element={<BreweryDetail breweries={breweries} />}
           />
           <Route
             path="/breweries"
-            element={
-              <BreweryList breweries={breweries} setBreweries={setBreweries} />
-            }
+            element={<BreweryList breweries={breweries} />}
           />
           <Route path="/" element={<Navigate to="/breweries" replace />} />
         </Routes>

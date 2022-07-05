@@ -12,19 +12,23 @@ export default function BreweryDetail(breweries) {
   const phone = brewery.phone || "Phone number not available";
   const country = brewery.country || "Country not available";
   const website = brewery.website_url ? (
-    <a href={brewery.website_url}>View Website</a>
+    <a className="list-item-details" href={brewery.website_url}>
+      View Website
+    </a>
   ) : (
-    "Website not available"
+    <div className="list-item-details">Website not available</div>
   );
 
   return (
     <main>
-      <h1>{name}</h1>
-      <p>{address}</p>
-      <p>{country}</p>
-      <p>{phone}</p>
-      <p>{website}</p>
-      <Link to="/breweries">Back to Breweries</Link>
+      <h1 className="list-detail-title">{name}</h1>
+      <p className="list-item-details">{address}</p>
+      <p className="list-item-details">{country}</p>
+      <p className="list-item-details">{phone}</p>
+      <p className="list-item-detials">{website}</p>
+      <Link className="list-item-details" to="/breweries">
+        Back to Breweries
+      </Link>
     </main>
   );
 }
