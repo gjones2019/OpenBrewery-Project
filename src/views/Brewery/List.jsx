@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Header from "./Header";
 import Search from "./Search";
 import ExtraFeatureButtons from "./ExtraFeatureButtons";
+import DisplayResults from "./DisplayResults";
 
 export default function BreweryList({ breweries }) {
   const [searchResults, setSearchResults] = useState([]);
@@ -32,25 +33,13 @@ export default function BreweryList({ breweries }) {
       />
       <div className="list-container">
         <ul className="list">
-          {displaySearchResults && searchResults
-            ? searchResults
-                .slice(0, paginate)
-                .map(({ name, city, state }, i) => (
-                  <li className="item" key={i}>
-                    <Link className="list-item-title" to={`/breweries/${i}`}>
-                      {name}
-                    </Link>
-                    <div className="list-item-city">{`${city}, ${state}`}</div>
-                  </li>
-                ))
-            : breweries.slice(0, paginate).map(({ name, city, state }, i) => (
-                <li className="item" key={i}>
-                  <Link to={`/breweries/${i}`} className="list-item-title">
-                    {name}
-                  </Link>
-                  <div className="list-item-city">{`${city}, ${state}`}</div>
-                </li>
-              ))}
+          <DisplayResults
+            displaySearchResults={displaySearchResults}
+            searchResults={searchResults}
+            paginate={paginate}
+            breweries={breweries}
+            query={query}
+          />
         </ul>
       </div>
     </main>
